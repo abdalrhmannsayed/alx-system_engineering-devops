@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Configuring a server
+sudo apt-get update -y -qq
+sudo apt-get -y install nginx
+# Edit index page
+echo "Hello World!" | sudo tee /var/www/html/index.nginx-debian.html
+# Make sure that port is 80
+sudo sed -i 's/8080/80/g' /etc/nginx/sites-enabled/default
+# Add redirect
+sudo sed -i '24i\	rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;' /etc/nginx/sites-enabled/default
+# Add Not Found Page
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/not_found.html
+sudo sed -i '25i\        error_page 404 /not_found.html;' /etc/nginx/sites-enabled/default
+# Restart Server
+sudo service nginx restart
