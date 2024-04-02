@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Update a server
+sudo apt-get update -y -qq
+
+# Install haproxy
+sudo apt-get -y install --no-install-recommends software-properties-common
+sudo add-apt-repository -y ppa:vbernat/haproxy-2.8
+sudo apt-get -y install haproxy=2.8.\*
+
+# Configure HAProxy
+sudo chown -R "$USER":"$USER" /etc/haproxy/haproxy.cfg
+sudo chmod -R u+rwx /etc/haproxy/
+sudo sed -i -e '$a\listen http-in\n\tbind :80\n\tbalance roundrobin\n\tserver 381033-web-01 35.174.207.21:80 check\n\tserver 381033-web-02 54.197.64.186:80 check\n' /etc/haproxy/haproxy.cfg
+# Enable haproxy to be started by init script
+sudo sed -i -e '$aENABLED=1\n' /etc/default/haproxy
+
+# Start HAProxy service
+sudo service haproxy restart
