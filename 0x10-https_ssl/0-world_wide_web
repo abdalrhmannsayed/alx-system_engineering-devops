@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# display information about subdomains.
+DOMAIN=$1
+SUB=$2
+SUBDOMAINS=( "www" "lb-01" "web-01" "web-02" )
+
+dig_domain () {
+	# func variables
+	SUB2="$2"
+	INFO="$(dig "$SUB2.$DOMAIN" | grep -A1 'ANSWER SECTION:' | awk 'NR==2')"
+	IP=$(echo "$INFO" | awk '{print $5}')
+	RECORD=$(echo "$INFO" | awk '{print $4}')
+
+	echo -e "The subdomain $SUB2 is a $RECORD record and points to $IP"
+}
+
+if [ $# -eq 1 ]; then
+	for SUBS in "${SUBDOMAINS[@]}"; do
+		dig_domain "$DOMAIN" "$SUBS"
+	done
+elif [ $# -eq 2 ]; then
+	dig_domain "$DOMAIN" "$SUB"
+fi
