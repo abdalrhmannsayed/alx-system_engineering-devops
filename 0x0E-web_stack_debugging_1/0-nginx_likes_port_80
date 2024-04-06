@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# make nginx server on port 80
+sed -i 's/listen 8080/listen 80/g' /etc/nginx/sites-enabled/default
+sed -i 's/listen \[::\]:8080/listen \[::\]:80/g' /etc/nginx/sites-enabled/default
+sudo service nginx restart
