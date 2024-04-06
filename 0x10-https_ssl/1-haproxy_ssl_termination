@@ -1,0 +1,18 @@
+defaults
+        mode    http
+        timeout connect 10s
+        timeout client  15s
+        timeout server  15s
+        timeout http-request 10s
+
+
+frontend http-in
+    bind *:80
+    bind *:443 ssl crt /etc/haproxy/certs/www.bedwey.tech.pem
+    redirect scheme https if !{ ssl_fc }
+    default_backend servers
+
+backend servers
+   balance roundrobin
+   server 381033-web-01 35.174.207.21:80
+   server 381033-web-02 54.197.64.186:80
